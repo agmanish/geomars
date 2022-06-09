@@ -1,5 +1,5 @@
 import torch
-
+import argaparse
 import numpy as np
 
 from sklearn.metrics import roc_auc_score
@@ -14,11 +14,20 @@ from sklearn.metrics import confusion_matrix
 from models import MarsModel
 from utils import onehot
 
-network_name = "densenet161"
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--data-dir', type=str, required=True)
+parser.add_argument('--weights-dir', type=str, required=True)
+parser.add_argument('--model', type=str, required=True)
+parser.add_argument('--outputs-dir', type=str, required=True)
+parser.add_argument('--num-epochs', type=int, required=True)
+parser.add_argument('--img-size', type=int, required=True)
+args = parser.parse_args()
+network_name = args.model
 
 data_transform = transforms.Compose(
     [
-        transforms.Resize([224, 224]),
+        transforms.Resize([args.img_size, args.img_size]),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
     ]
@@ -26,22 +35,22 @@ data_transform = transforms.Compose(
 
 hyper_params = {
     "batch_size": 64,
-    "num_epochs": 15,
+    "num_epochs": args.num_epochs,
     "learning_rate": 1e-2,
     "optimizer": "sgd",
     "momentum": 0.9,
-    "model": network_name,
+    "model": args.model,
     "num_classes": 15,
-    "pretrained": True,
+    "pretrained": False,
     "transfer_learning": False,
 }
-
+roottest=os.path.join(args.data_dir,"test")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = MarsModel(hyper_params)
-checkpoint = torch.load("./models/" + network_name + ".pth")
+checkpoint = torch.load(args.weights_dir)
 model.load_state_dict(checkpoint)
 
-ctx_test = datasets.ImageFolder(root="./data/test", transform=data_transform)
+ctx_test = datasets.ImageFolder(root=roottest, transform=data_transform)
 test_loader = torch.utils.data.DataLoader(
     ctx_test, batch_size=16, shuffle=True, num_workers=4
 )
@@ -92,17 +101,17 @@ acc = metrics.accuracy_score(y, y_pred)
 print(
     "Classification report for classifier %s:\n%s\n"
     % (network_name, metrics.classification_report(y, y_pred, digits=4)),
-    file=open("./results/" + network_name + ".txt", "w"),
+    file=open(args.outputs_dir+'/' + network_name + ".txt", "w"),
 )
 print(
     "AUROC:\t",
     macro_roc_auc_ovo,
     macro_roc_auc_ovr,
-    file=open("./results/" + network_name + ".txt", "a"),
+    file=open(args.outputs_dir+'/' + network_name + ".txt", "a"),
 )
 print("Acc:\t", acc, file=open("./results/" + network_name + ".txt", "a"))
-print("\n", file=open("./results/" + network_name + ".txt", "a"))
+print("\n", file=open(args.outputs_dir+'/' + network_name + ".txt", "a"))
 print(
     confusion_matrix(labels, predictions),
-    file=open("./results/" + network_name + ".txt", "a"),
+    file=open(args.outputs_dir+'/' + network_name + ".txt", "a"),
 )
