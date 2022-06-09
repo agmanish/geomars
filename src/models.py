@@ -11,7 +11,7 @@ from torchvision.models import (
     densenet161,
 )
 from torch.nn import functional as F
-from pytorch_lightning.metrics.functional import accuracy, precision_recall
+from torchmetrics.functional import accuracy, precision_recall
 
 
 class MarsModel(pl.LightningModule):
