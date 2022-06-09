@@ -11,13 +11,14 @@ start = time.time()
 parser = argparse.ArgumentParser()
 parser.add_argument('--data-dir', type=str, required=True)
 parser.add_argument('--model', type=str, required=True)
+parser.add_argument('--batch-sizee', type=int, required=True)
 parser.add_argument('--num-epochs', type=int, required=True)
 parser.add_argument('--img-size', type=int, required=True)
 args = parser.parse_args()
 
 
 hyper_params = {
-    "batch_size": 64,
+    "batch_size": args.batch_size,
     "num_epochs": args.num_epochs,
     "learning_rate": 1e-2,
     "optimizer": "sgd",
