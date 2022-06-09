@@ -47,9 +47,7 @@ hyper_params = {
 roottest=os.path.join(args.data_dir,"test")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = MarsModel(hyper_params)
-checkpoint = torch.load(args.weights_dir)
-model.load_state_dict(checkpoint)
-
+model.load_state_dict(torch.load(args.weights_dir))
 ctx_test = datasets.ImageFolder(root=roottest, transform=data_transform)
 test_loader = torch.utils.data.DataLoader(
     ctx_test, batch_size=16, shuffle=True, num_workers=4
