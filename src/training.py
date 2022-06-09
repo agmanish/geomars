@@ -10,8 +10,8 @@ start = time.time()
 parser = argparse.ArgumentParser()
 parser.add_argument('--data-dir', type=str, required=True)
 parser.add_argument('--model', type=str, required=True)
-parser.add_argument('--outputs-dir', type=str, required=True)
 parser.add_argument('--num-epochs', type=int, required=True)
+parser.add_argument('--img-size', type=int, required=True)
 args = parser.parse_args()
 
 
@@ -31,7 +31,7 @@ checkpoint = ModelCheckpoint(verbose=True, monitor="val_acc", mode="max")
 
 data_transform = transforms.Compose(
     [
-        transforms.Resize([220, 220]),
+        transforms.Resize([args.img_size, args.img_size]),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
     ]
