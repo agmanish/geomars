@@ -18,7 +18,8 @@ parser.add_argument('--weights-dir', type=str, required=True)
 args = parser.parse_args()
 weights_path=args.weights_dir
 weights_file=args.model+".pth"
-pthfile=open(weights_path+'/'+weights_file, "x")
+with open(os.path.join(weights_path, weights_file), 'w') as fp:
+    pass
 hyper_params = {
     "batch_size": args.batch_size,
     "num_epochs": args.num_epochs,
@@ -70,4 +71,4 @@ trainer = pl.Trainer(
 )
 trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
 trainer.test(dataloaders=test_loader)
-torch.save(model.state_dict(), pthfile)
+torch.save(model.state_dict(), os.path.join(weights_path, weights_file))
