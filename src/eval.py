@@ -107,7 +107,7 @@ print(
     macro_roc_auc_ovr,
     file=open(args.outputs_dir+'/' + network_name + ".txt", "a"),
 )
-print("Acc:\t", acc, file=open("./results/" + network_name + ".txt", "a"))
+print("Acc:\t", acc, file=open(args.outputs_dir+'/' + network_name + ".txt", "a"))
 print("\n", file=open(args.outputs_dir+'/' + network_name + ".txt", "a"))
 print(
     confusion_matrix(labels, predictions),
