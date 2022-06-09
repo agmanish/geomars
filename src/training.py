@@ -4,6 +4,7 @@ import pytorch_lightning as pl
 import time
 from torchvision import datasets, transforms
 from pytorch_lightning.callbacks import ModelCheckpoint
+import os
 
 from models import MarsModel
 start = time.time()
