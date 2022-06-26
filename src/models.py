@@ -9,6 +9,8 @@ from torchvision.models import (
     resnet50,
     densenet121,
     densenet161,
+    mobilenet_v3_large,
+    mobilenet_v3_small
 )
 from torch.nn import functional as F
 from torchmetrics.functional import accuracy, precision_recall
@@ -92,7 +94,27 @@ class MarsModel(pl.LightningModule):
                 self.set_parameter_requires_grad(self.net)
             num_ftrs = self.net.classifier.in_features
             self.net.classifier = nn.Linear(num_ftrs, hyper_param["num_classes"])
+            
+        elif hyper_param["model"] == "mobilenet_v3_large":
+            """
+            MobileNetV3Large
+            """
+            self.net = mobilenet_v3_large(pretrained=hyper_param["pretrained"])
+            if hyper_param["transfer_learning"] is True:
+                self.set_parameter_requires_grad(self.net)
+            num_ftrs = self.net.classifier.in_features
+            self.net.classifier = nn.Linear(num_ftrs, hyper_param["num_classes"])
 
+        elif hyper_param["model"] == "mobilenet_v3_small":
+            """
+            MobileNetV3Small
+            """
+            self.net = mobilenet_v3_small(pretrained=hyper_param["pretrained"])
+            if hyper_param["transfer_learning"] is True:
+                self.set_parameter_requires_grad(self.net)
+            num_ftrs = self.net.classifier.in_features
+            self.net.classifier = nn.Linear(num_ftrs, hyper_param["num_classes"])
+            
         else:
             print("Invalid model name, exiting...")
             exit()
