@@ -112,7 +112,7 @@ class MarsModel(pl.LightningModule):
             self.net = mobilenet_v3_small(pretrained=hyper_param["pretrained"])
             if hyper_param["transfer_learning"] is True:
                 self.set_parameter_requires_grad(self.net)
-            num_ftrs = list(deep_net.children())[0][:-2]
+            num_ftrs = list(self.net.children())[0][:-2]
             self.net.classifier = nn.Linear(num_ftrs, hyper_param["num_classes"])
             
         else:
